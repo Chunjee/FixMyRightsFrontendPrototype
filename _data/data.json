@@ -1,0 +1,4 @@
+{"icons":{"step1":"folder"},"statuses":{"Completed":{"color":"success","icon":"check-circle"},"Compromised":{"color":"compromised","icon":"handshake"},"In alpha":{"color":"info","icon":"cogs"},"Not implemented":{"color":"warning","icon":"hourglass-start"},"Stagnant":{"color":"stagnant","icon":"calendar-times"},"Broken":{"color":"danger","icon":"heart-broken"}},
+
+"expectations":[{"title":"- Requires original equipment manufacturers of digital electronic devices to make diagnostic and repair information available to device owners and independent repair providers.","category":"step1","status":"Completed","sources":["https://legiscan.com/HI/bill/SB425/2020"],"tags":["HI"], "quote":"Text|Requires original equipment manufacturers of digital electronic devices to make diagnostic and repair information available to device owners and independent repair providers."}
+]}

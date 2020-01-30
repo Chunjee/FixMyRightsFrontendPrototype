@@ -1,0 +1,216 @@
+---
+layout: page
+---
+
+{% assign promises = site.data.data.expectations %}
+{% assign icons = site.data.data.icons %}
+{% assign statuses = site.data.data.statuses %}
+{% assign confidence = site.data.data.confidence %}
+{% assign total = promises | size %}
+
+{% assign categories = promises | map: 'category' | uniq %}
+
+{% assign estimatedprogress = site.data.majorsystems.data[0].gpercent %}
+
+<div class="container promises-header page-header" id="promises-header">
+    <div class="row">
+
+        <div class="col-md-6">
+            <ul class="list-group">
+                <!-- <li class="list-group-item list-group-item inauguration-time-container">
+                    <i class="fa fa-home fa-fw"></i>
+                    <b id="inauguration-time">Days Till Inauguration: <span id="inauguration-days"><i class='loading'>Loading...</i></span></b>
+                </li> -->
+                <li class="list-group-item list-group-item">
+                    <i class="fa fa-calendar fa-fw"></i>
+                    <b>Next Bill up for Robust Conversation: <span id="days-left"><i class='loading'>Loading...</i></span></b>
+                </li>
+
+                {% for status in statuses %}
+                    {% assign status_name = status[0] %}
+                    {% assign status_data = status[1] %}
+                    <li class="list-group-item list-group-item-{{ status_data['color'] }}" data-list-facet="js-promise-status" data-facet-value="{{ status_name }}" data-select-single="true">
+                        <i class="fa fa-fw fa-{{ status_data['icon'] }} "></i>
+                        {% assign category_total = (promises | where: "status",status_name | size) %}
+                        {% assign category_percent = (promises | where: "status",status_name | size | times: 100 | divided_by: total) %}
+                        {% if category_percent == 0 %}
+                            {% assign category_percent = 1 %}
+                        {% endif %}
+                        {{ status_name }}: <span class="active-points">{{ category_total }}</span>   <span class="total-points">({{ category_percent }}%)</span>
+                    </li>
+                {% endfor %}
+
+            </ul>
+        <canvas id="timechart"></canvas>
+        </div>
+
+        <div class="container-fluid">
+            <p><strong>RightToRepairFrontend Prototype</strong></p>
+            <p>This is an area to explain the site and reasoning behind it</p>
+            <div id="share-buttons" class="text-center">
+                <ul class="list-inline">
+                    <li>
+                        <!-- <a href="" target="_blank"
+                           style="color:#3b5998;">
+                            <i class="fa fa-2x fa-facebook-square"></i>
+                        </a> -->
+                    </li>
+                    <li>
+                        <a href=""
+                           target="_blank" style="color:#1da1f2;">
+                            <i class="fab fa-2x fa-twitter"></i>
+                        </a>
+                    </li>
+                </ul>
+            </a>
+         </div>
+        </div>
+    </div>
+
+<div class="container-fluid promises" id="promises">
+    <div class="row promises__search-row">
+        <div class="col-md-5">
+            <form action="#" class="form-inline">
+                <input id="search" type="text" class="form-control search" placeholder="Search">
+                <button class="promises__category--reset btn btn-default">
+                    <i class="fa fa-fw fa-refresh"></i> Clear
+                    <i class="fa fa-fw fa-filter"></i><span id="count">{{ total }}</span>/{{ total }}
+                </button>
+            </form>
+            <br>
+        </div>
+        <div class="col-md-7" id="center-on-mobile">
+            <div class="pull-right">
+
+                <div class="promises__statuses">
+                    {% for status in statuses %}
+                        {% assign status_name = status[0] %}
+                        {% assign status_data = status[1] %}
+
+                        <button class="btn btn-{{ status_data['color'] }}" data-list-facet="js-promise-status" data-facet-value="{{ status_name }}" data-select-single="true">
+                            <i class="fa fa-{{ status_data['icon'] }} fa-fw" aria-hidden="true"></i>
+                            <span class="remove-on-mobile">{{ status_name }}</span>
+                        </button>
+                    {% endfor %}
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+<div class="container-fluid">
+    <div class="row">
+        <ul class="nav nav-tabs" id="myTabs" role="tablist" >
+            {% for category in categories %}
+                <li role="presentation" data-list-facet="js-promise-category" data-facet-value="{{ category }}" class="{{ category }}">
+                    <a href="#" role="tab" data-toggle="tab" class="text-muted">
+                        <i class="fa fa-fw fa-{{ icons[category] }}"></i>&nbsp;
+                        <span class="remove-on-mobile">{{ category }}</span>
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- <div class="row promises__category-row">
+        <div class="col-md-12">
+
+            <div class="promises__categories">
+
+                {% for category in categories %}
+                <button class="promises__category btn btn-default" data-list-facet="js-promise-category" data-facet-value="{{ category }}">
+                    <i class="fa fa-fw fa-{{ icons[category] }}"></i> {{ category }}
+                </button>
+                {% endfor %}
+
+            </div>
+
+        </div>
+    </div> -->
+    <!-- /.promises__category-row -->
+
+    <div class="row promises__table container-fluid">
+                <table class="table table-striped">
+
+                    <thead>
+                    <tr>
+                        <!--<th>ID</th> -->
+                        <!--<th>Status</th>-->
+                        <!--<th>Category</th>-->
+                        <!-- <th>Tags</th> -->
+                        <th>Expectation</th>
+                        <!-- <th>Sources</th> -->
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+
+                    <tbody class="list">
+                    <!-- add color to each policy -->
+                    {% for promise in promises %}
+                    <tr class="promise {% if promise.status == 'Not implemented' %}warning{% endif %}{% if promise.status == 'In alpha' %}info{% endif %}{% if promise.status == 'Completed' %}success{% endif %}{% if promise.status == 'Broken' %}danger{% endif %}{% if promise.status == 'Stagnant' %}stagnant{% endif %}{% if promise.status == 'Compromised' %}compromised{% endif %}">
+                        <!-- <td class="promise__id">{{ forloop.index }}.</td> --> <!-- Numbering promises is slightly annoying because we deal with a lot more promises than TrumpTracker and prefer to sort by date which may change the numbering -->
+
+                        <!--
+                         <td class="promise__status" title="{{ promise.status }}">
+                            <i class="fa fa-fw fa-{{ statuses[promise.status]['icon'] }} text-{{ statuses[promise.status]['color'] }}" title="{{ promise.status }}"></i>
+                            <span class="promise__status-text js-promise-status sr-only">{{ promise.status }}</span>
+                        </td>
+                        -->
+                        <!--
+                        <td class="promise__category" style="white-space: nowrap;">
+                            <i class="fa fa-fw fa-{{ icons[promise.category] }}"></i> <span class="js-promise-category">{{ promise.category }}</span>
+                        </td>
+                        -->
+                        <!-- <td class="promise__tags" style="text-align: center;">
+                            {% for tag in promise.tags %}
+                            <a class="label label-default">{{ tag }}</a>
+                            {% endfor %}
+                        </td> -->
+                        <td class="promise__title js-promise-text">
+                            <a name="{{ promise.title | replace: ' ', '_' }}" class="anchor"></a>
+                        <b><span class="js-promise-category">{{ promise.category }}</span>:</b>
+                        <span class="promise__status-text js-promise-status sr-only">{{ promise.status }}</span>
+                        {{ promise.title }}
+                            <!-- Append badges for anything of interest -->
+                            {% for tag in promise.tags %}
+                                {% if tag == 'passed' %}
+                                    <span class="badge badge-success">{{ tag }}</span>
+                                {% endif %}
+                            {% endfor %}
+                            
+                        <!-- add superscript citations and sources -->
+                        {% for source in promise.sources %}
+                            <sup><a href="{{ source }}">{{ forloop.index }}</a></sup>
+                        {% endfor %}
+                        </td>
+                        <!-- <td class="promise__sources" style="white-space: nowrap;">
+                        </td> -->
+                        <td class="promise__actions">
+                            <!-- clickable actions -->
+                            <!-- <a href="{{ promise.comments }}" target="_blank" rel="nofollow"> 
+                            <i class="fa fa-fw fa-comments text-muted" aria-hidden="true"></i></a> -->
+                            <a href="#{{ promise.title | replace: ' ', '_' }}" rel="nofollow"> 
+                            <i class="fa fa-fw fa-link text-muted" aria-hidden="true"></i></a>
+
+                            {% if promise.quote contains '|' %}
+                                {% assign quotesplit = promise.quote | split: '|' %}
+                                {% assign quotee = quotesplit[0] %}
+                                {% assign quotetext = quotesplit[1] %}
+                            {% else %}
+                                {% assign quotee = 'Chris Roberts' %}
+                            {% assign quotetext = promise.quote %}
+                            {% endif %}
+                            {% if promise.quote != undefined %}
+                                <i class="fa fa-fw fa-quote-left text-muted" aria-hidden="true" data-toggle="tooltip" title="{{ quotee }}: &ldquo;{{ quotetext }}&rdquo;"></i>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+</div>
+<!-- /#promises -->
