@@ -147,13 +147,16 @@ layout: page
                     <tbody class="list">
                     <!-- add color to each policy -->
                     {% for bill in bills %}
-                    <tr class="promise {% if bill.status == 'new' %}info{% endif %}{% if bill.status == 'In alpha' %}info{% endif %}{% if bill.status == 'Completed' %}success{% endif %}{% if bill.status == 'Broken' %}danger{% endif %}{% if bill.status == 'Stagnant' %}stagnant{% endif %}{% if bill.status == 'Compromised' %}compromised{% endif %}">
-                        <td class="promise__title js-promise-text">
-                            <a name="{{ bill.title | replace: ' ', '_' }}" class="anchor"></a>
+                        {% if bill.status == 'new' %}
+                            {% continue %}
+                        {% endif %}
+                        <tr class="promise {% if bill.status == 'new' %}info{% endif %}{% if bill.status == 'In alpha' %}info{% endif %}{% if bill.status == 'Completed' %}success{% endif %}{% if bill.status == 'Broken' %}danger{% endif %}{% if bill.status == 'Stagnant' %}stagnant{% endif %}{% if bill.status == 'Compromised' %}compromised{% endif %}">
+                            <td class="promise__title js-promise-text">
+                            <a name="{{ bill.title | replace: ' ', '_' }}" class="anchor">{{bill.bill_number}}</a>
                             <b><span class="js-promise-category">{{ bill.state }} {{bill.bill_number}} - </span></b>
-                            <span class="promise__status-text js-promise-status sr-only">{{ bill.title }}</span>
-                            <!-- {{ bill.title }} -->
-                            
+                            <span class="promise__status-text js-promise-status sr-only">{{bill.bill_number}}</span>
+                            {{ bill.title }}
+
                             <!-- add superscript citations and sources -->
                             {% for source in promise.sources %}
                                 <sup><a href="{{ source }}">{{ forloop.index }}</a></sup>
