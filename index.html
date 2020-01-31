@@ -3,9 +3,9 @@ layout: page
 ---
 
 {% assign promises = site.data.data.expectations %}
+{% assign bills = site.data.bills %}
 {% assign icons = site.data.data.icons %}
 {% assign statuses = site.data.data.statuses %}
-{% assign confidence = site.data.data.confidence %}
 {% assign total = promises | size %}
 
 {% assign categories = promises | map: 'category' | uniq %}
@@ -22,7 +22,7 @@ layout: page
                 </li> -->
                 <li class="list-group-item list-group-item">
                     <i class="fa fa-calendar fa-fw"></i>
-                    <b>Next Bill up for Robust Conversation: <span id="days-left"><i class='loading'>Loading...</i></span></b>
+                    <b>Next Bill up for robust conversation: <span id="days-left"><i class='loading'>Loading...</i></span></b>
                 </li>
 
                 {% for status in statuses %}
@@ -40,7 +40,7 @@ layout: page
                 {% endfor %}
 
             </ul>
-        <canvas id="timechart"></canvas>
+        <!-- <canvas id="timechart"></canvas> -->
         </div>
 
         <div class="container-fluid">
@@ -146,16 +146,18 @@ layout: page
 
                     <tbody class="list">
                     <!-- add color to each policy -->
-                    {% for promise in promises %}
-                    <tr class="promise {% if promise.status == 'Not implemented' %}warning{% endif %}{% if promise.status == 'In alpha' %}info{% endif %}{% if promise.status == 'Completed' %}success{% endif %}{% if promise.status == 'Broken' %}danger{% endif %}{% if promise.status == 'Stagnant' %}stagnant{% endif %}{% if promise.status == 'Compromised' %}compromised{% endif %}">
+                    {% for bill in bills %}
+                    <tr class="promise {% if bill.status == 'new' %}info{% endif %}{% if bill.status == 'In alpha' %}info{% endif %}{% if bill.status == 'Completed' %}success{% endif %}{% if bill.status == 'Broken' %}danger{% endif %}{% if bill.status == 'Stagnant' %}stagnant{% endif %}{% if bill.status == 'Compromised' %}compromised{% endif %}">
                         <td class="promise__title js-promise-text">
-                            <a name="{{ promise.title | replace: ' ', '_' }}" class="anchor"></a>
+                            <a name="{{ bill.title | replace: ' ', '_' }}" class="anchor"></a>
                         <b><span class="js-promise-category">{{ promise.category }}</span>:</b>
-                        <span class="promise__status-text js-promise-status sr-only">{{ promise.status }}</span>
-                        {{ promise.title }}
+                        <span class="promise__status-text js-promise-status sr-only">{{ bill.state }} {{bill.bill_number}} - </span>
+                        {{ bill.title }}
+                            <!--  -->
+                            <span class="badge badge-success">{{ bill.last_action }}</span>
                             <!-- Append badges for anything of interest -->
-                            {% for tag in promise.tags %}
-                                {% if tag == 'passed' %}
+                            {% for tag in bill.tags%}
+                                {% if bill.passed == 'passed' %}
                                     <span class="badge badge-success">{{ tag }}</span>
                                 {% endif %}
                             {% endfor %}
